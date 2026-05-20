@@ -29,3 +29,15 @@ class KNN:
     def evaluate(self, X, y):
         predictions = self.predict(X)
         return sum(1 for p, vrai in zip(predictions, y) if p == vrai)/len(y)
+    
+    def grid_search(self,X, y, k_values):
+        best_k = None
+        best_score = 0
+        for k in k_values:
+            self.k = k
+            self.fit(X, y)
+            score = self.evaluate(X, y)
+            if score > best_score:
+                best_score = score
+                best_k = k
+        return best_k
