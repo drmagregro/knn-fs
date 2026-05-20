@@ -25,3 +25,7 @@ class KNN:
             labels = [label for (distance, label) in k_plus_proches]
             predictions.append(max(labels, key=labels.count))
         return predictions
+    
+    def evaluate(self, X, y):
+        predictions = self.predict(X)
+        return sum(1 for p, vrai in zip(predictions, y) if p == vrai)/len(y)
