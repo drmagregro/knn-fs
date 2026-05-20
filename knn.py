@@ -1,3 +1,6 @@
+from data_loader import load_normalized_data
+
+
 class KNN:
     def __init__(self, k):
         self.k = k
@@ -10,34 +13,50 @@ class KNN:
 
     def _distance(self, a, b):
         total = 0
+
         for index in range(len(a)):
             total = total + (a[index] - b[index]) ** 2
+
         return total ** 0.5
-    
+
     def predict(self, X):
+
         predictions = []
+
         for row in X:
+
             distances = []
+
             for point in self.X_train:
+
                 d = self._distance(point, row)
+
                 distances.append(d)
-            k_plus_proches = sorted(zip(distances, self.y_train), key=lambda x: x[0])[:self.k]
+
+            k_plus_proches = sorted(
+                zip(distances, self.y_train),
+                key=lambda x: x[0]
+            )[:self.k]
+
             labels = [label for (distance, label) in k_plus_proches]
+
             predictions.append(max(labels, key=labels.count))
+
         return predictions
-    
-    def evaluate(self, X, y):
-        predictions = self.predict(X)
-        return sum(1 for p, vrai in zip(predictions, y) if p == vrai)/len(y)
-    
-    def grid_search(self,X, y, k_values):
-        best_k = None
-        best_score = 0
-        for k in k_values:
-            self.k = k
-            self.fit(X, y)
-            score = self.evaluate(X, y)
-            if score > best_score:
-                best_score = score
-                best_k = k
-        return best_k
+
+
+X, y, scaler = load_normalized_data(
+    file_path="bienetre.csv",
+    target_col="target"
+)
+
+print(X)
+print(y)
+
+model = KNN(k=3)
+
+model.fit(X, y)
+
+prediction = model.predict(X[:5])
+
+print(prediction)
